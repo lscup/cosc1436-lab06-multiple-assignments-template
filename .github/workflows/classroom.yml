@@ -1,0 +1,69 @@
+name: Autograding Tests
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    timeout-minutes: 5
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Compile
+      run: g++ -std=c++17 -o main *.cpp
+
+    - name: compilationcheck
+      id: compilationcheck
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: "Compilation Check"
+        setup-command: g++ -std=c++17 -o main *.cpp
+        command: test -f main
+        timeout: 30
+        max-score: 10
+
+    - name: functionaltestbasicinput
+      id: functionaltestbasicinput
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: "Functional Test - Basic Input"
+        command: printf '1000\n900\n800\n700\n600\n95\n88\n92\n78\n-1\n' | ./main
+        timeout: 30
+        max-score: 30
+
+    - name: functionaltestpassinggrade
+      id: functionaltestpassinggrade
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: "Functional Test - Passing Grade"
+        command: printf '1000\n900\n800\n700\n600\n900\n850\n-1\n' | ./main
+        timeout: 30
+        max-score: 30
+
+    - name: functionaltestedgecase
+      id: functionaltestedgecase
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: "Functional Test - Edge Case"
+        command: printf '1000\n900\n800\n700\n600\n600\n600\n-1\n' | ./main
+        timeout: 30
+        max-score: 30
+
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        COMPILATIONCHECK_RESULTS: "${{steps.compilationcheck.outputs.result}}"
+        FUNCTIONALTESTBASICINPUT_RESULTS: "${{steps.functionaltestbasicinput.outputs.result}}"
+        FUNCTIONALTESTPASSINGGRADE_RESULTS: "${{steps.functionaltestpassinggrade.outputs.result}}"
+        FUNCTIONALTESTEDGECASE_RESULTS: "${{steps.functionaltestedgecase.outputs.result}}"
+      with:
+        runners: compilationcheck,functionaltestbasicinput,functionaltestpassinggrade,functionaltestedgecase
