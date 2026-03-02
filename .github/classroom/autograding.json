@@ -1,0 +1,44 @@
+{
+  "tests": [
+    {
+      "run": "echo 'Compilation successful'",
+      "name": "Compilation Check",
+      "input": "",
+      "setup": "g++ -std=c++17 -o main *.cpp",
+      "output": "Compilation successful\n",
+      "points": 10,
+      "timeout": 30,
+      "comparison": "exact"
+    },
+    {
+      "run": "printf '1000\n900\n800\n700\n600\n95\n88\n92\n78\n-1\n' | ./main",
+      "name": "Functional Test - Basic Input",
+      "input": "",
+      "setup": "",
+      "output": "\nFinal Results\nTotal Points Earned: 253\nTotal Points Possible: 1000\nTotal Percentage: 25.3%\nFinal Letter Grade: F\n",
+      "points": 30,
+      "timeout": 30,
+      "comparison": "exact"
+    },
+    {
+      "run": "printf '1000\n900\n800\n700\n600\n900\n850\n-1\n' | ./main",
+      "name": "Functional Test - Passing Grade",
+      "input": "",
+      "setup": "",
+      "output": "\nFinal Results\nTotal Points Earned: 1750\nTotal Points Possible: 1000\nTotal Percentage: 175%\nFinal Letter Grade: A\n",
+      "points": 30,
+      "timeout": 30,
+      "comparison": "exact"
+    },
+    {
+      "run": "printf '1000\n900\n800\n700\n600\n600\n600\n-1\n' | ./main",
+      "name": "Functional Test - Edge Case",
+      "input": "",
+      "setup": "",
+      "output": "\nFinal Results\nTotal Points Earned: 600\nTotal Points Possible: 1000\nTotal Percentage: 60%\nFinal Letter Grade: D\n",
+      "points": 30,
+      "timeout": 30,
+      "comparison": "exact"
+    }
+  ]
+}
